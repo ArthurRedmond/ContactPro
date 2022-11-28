@@ -36,7 +36,7 @@ namespace ContactPro.Models
         public string? City { get; set; }
 
         [Required]
-        public States States { get; set; }
+        public States? States { get; set; }
 
         [Required]
         [Display(Name = "Zip Code")]
@@ -56,11 +56,11 @@ namespace ContactPro.Models
         public DateTime? Created { get; set; }
 
         //Image properties
-        public byte[] ImageData { get; set; }
-        public string ImageType { get; set; }
+        public byte[]? ImageData { get; set; }
+        public string? ImageType { get; set; }
 
         [NotMapped]
-        public IFormFile ImageFile { get; set; }
+        public IFormFile? ImageFile { get; set; }
 
         //Virtuals
         public virtual AppUser? AppUser { get; set; }
