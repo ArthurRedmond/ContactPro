@@ -26,7 +26,7 @@
             <div class="mt-5">
                 <label class="form-label fw-bold">CATEGORY FILTER</label>
 
-                <select name="id" asp-items="@ViewBag.CategoryId" class="form-control"
+                <select name="categoryId" asp-items="@ViewBag.CategoryId" class="form-control"
                         onchange="this.form.submit()" onfocus="this.selectedIndex=-1;this.blur();">
                     <option>All Contacts</option>
                 </select>
@@ -41,7 +41,14 @@
                     <div class="card mb-3">
                         <div class="row g-0">
                             <div class="col-md-4 square-img-container">
-                                <img src="@ImageService.ConvertByteArrayToFile(contact.ImageData!, contact.ImageType!)" class="square-img rounded-start" alt="...">
+                                @if (contact.ImageData != null)
+                                {
+                                    <img src="@ImageService.ConvertByteArrayToFile(contact.ImageData!, contact.ImageType!)" class="square-img rounded-start" alt="...">
+                                }
+                                else
+                                {
+                                    <img src="~/img/DefaultContactImage.png" class="square-img rounded-start" alt="...">
+                                }
                             </div>
                             <div class="col-md-8">
                                 <div class="card-body">
