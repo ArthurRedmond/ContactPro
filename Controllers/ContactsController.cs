@@ -200,7 +200,7 @@ namespace ContactPro.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,AppUserId,FirstName,LastName,BirthDate,Address1,Address2,City,States,ZipCode,Email,PhoneNumber,Created,ImageData,ImageType,ImageFile")] Contact contact)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,AppUserId,FirstName,LastName,BirthDate,Address1,Address2,City,States,ZipCode,Email,PhoneNumber,Created,ImageData,ImageType,ImageFile")] Contact contact, List<int> CategoryList)
         {
             if (id != contact.Id)
             {
@@ -213,12 +213,12 @@ namespace ContactPro.Controllers
                 {
                     contact.Created = DateTime.SpecifyKind(contact.Created, DateTimeKind.Utc);
 
-                    if(contact.BirthDate != null)
+                    if (contact.BirthDate != null)
                     {
                         contact.BirthDate = DateTime.SpecifyKind(contact.BirthDate.Value, DateTimeKind.Utc);
                     }
 
-                    if(contact.ImageFile != null)
+                    if (contact.ImageFile != null)
                     {
                         contact.ImageData = await _imageService.ConvertFileToByteArrayAsync(contact.ImageFile);
                         contact.ImageType = contact.ImageFile.ContentType;
@@ -226,6 +226,21 @@ namespace ContactPro.Controllers
 
                     _context.Update(contact);
                     await _context.SaveChangesAsync();
+
+                    //remove old categories
+                    List<Category> oldCategories = (await _addressBookService.GetContactCategoriesAsync(contact.Id)).ToList();
+                    foreach (var category in oldCategories)
+                    {
+                        await _addressBookService.RemoveContactFromCategoryAsync(category.Id, contact.Id);
+                    }
+                    //ad the new categories
+                    foreach (int categoryId in CategoryList)
+                    {
+                        await _addressBookService.AddContactToCategoryAsync(categoryId, contact.Id);
+                    }
+                    {
+
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
