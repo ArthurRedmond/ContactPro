@@ -36,7 +36,7 @@ namespace ContactPro.Services
             emailBody.HtmlBody = htmlMessage;
             newEmail.Body = emailBody.ToMessageBody();
 
-            using SmtpClient smtpClient = new();
+            SmtpClient smtpClient = new();
 
             try
             {
